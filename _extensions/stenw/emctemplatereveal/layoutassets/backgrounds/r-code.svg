@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">R code comparing two normal densities</title>
+  <desc id="description">Editable vector illustration of a short, valid R script using dnorm and base graphics.</desc>
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#c6e9f4" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="#e8f7fb"/>
+  <rect width="1600" height="900" fill="url(#grid)" opacity=".65"/>
+  <circle cx="1380" cy="670" r="325" fill="#86d2ed" opacity=".38"/>
+  <circle cx="1510" cy="420" r="210" fill="#008080" opacity=".12"/>
+  <rect x="64" y="107" width="1020" height="692" rx="16" fill="#0c2074" opacity=".14"/>
+  <rect x="52" y="95" width="1020" height="692" rx="16" fill="#ffffff"/>
+  <path d="M68 95H1056Q1072 95 1072 111V192H52V111Q52 95 68 95Z" fill="#0c2074"/>
+  <rect x="52" y="188" width="1020" height="4" fill="#008080"/>
+  <text x="88" y="152" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="37" font-weight="700">R / normal_densities.R</text>
+  <g font-family="Consolas, 'Courier New', monospace" font-size="36" xml:space="preserve">
+    <g fill="#8aa8b8" text-anchor="end">
+      <text x="117" y="256">1</text><text x="117" y="318">2</text>
+      <text x="117" y="380">3</text><text x="117" y="442">4</text>
+      <text x="117" y="504">5</text><text x="117" y="566">6</text>
+      <text x="117" y="628">7</text><text x="117" y="690">8</text>
+    </g>
+    <path d="M145 218V723" stroke="#cfedf8" stroke-width="2"/>
+    <g fill="#0c2074">
+      <text x="172" y="256" fill="#008080"># Compare normal densities</text>
+      <text x="172" y="318">x &lt;- seq(-4, 4, length.out = 400)</text>
+      <text x="172" y="380">standard &lt;- dnorm(x)</text>
+      <text x="172" y="442">wide &lt;- dnorm(x, sd = 1.5)</text>
+      <text x="172" y="504">plot(x, standard, type = "l",</text>
+      <text x="172" y="566">     col = "#0C2074", lwd = 3,</text>
+      <text x="172" y="628">     xlab = "x", ylab = "Density")</text>
+      <text x="172" y="690">lines(x, wide, col = "#008080", lwd = 3)</text>
+    </g>
+  </g>
+  <rect x="52" y="774" width="1020" height="13" fill="#86d2ed"/>
+</svg>
