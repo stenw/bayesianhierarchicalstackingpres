@@ -1,0 +1,369 @@
+/*-- scss:defaults --*/
+// Erasmus MC main brand colors (Merkgids 2025, pp. 44-46).
+$emc-dark-blue: #0c2074;
+$emc-light-blue: #86d2ed;
+$emc-medium-blue: #0078d1;
+$emc-dark-blue-variant: #00216d;
+$emc-light-blue-variant: #98ddf5;
+$emc-very-light-blue: #cfedf8;
+$emc-green: #008080;
+$emc-red: #db3324;
+$emc-purple: #5c37b4;
+$emc-lilac: #b281e2;
+$emc-orange: #df4512;
+$emc-white: #ffffff;
+$emc-light-grey: #faf9f9;
+$emc-pale-blue: #e8f7fb;
+
+// Preserve the original variable names for presentations with extra SCSS.
+$emcdblue: $emc-dark-blue;
+$emclblue: $emc-light-blue;
+$emcmblue: $emc-medium-blue;
+$emcdbluevar: $emc-dark-blue-variant;
+$emclbluevar: $emc-light-blue-variant;
+$emcverylightblue: $emc-very-light-blue;
+$emcgreen: $emc-green;
+$emcred: $emc-red;
+$emcpurple: $emc-purple;
+$emclila: $emc-lilac;
+$emcaccent: $emc-orange;
+$emclightgrey: $emc-light-grey;
+$emclblue80: mix(white, $emclblue, 80%);
+$emcdblue80: mix(white, $emcdblue, 80%);
+
+$body-bg: $emc-white;
+$body-color: $emc-dark-blue;
+$presentation-heading-color: $emc-dark-blue;
+$presentation-heading-font-weight: 700;
+$presentation-font-size-root: 30px;
+$presentation-line-height: 1.35;
+$font-family-sans-serif: "Montserrat", Arial, sans-serif;
+$font-family-monospace: Consolas, "Courier New", monospace;
+$link-color: $emc-dark-blue;
+$selection-bg: $emc-light-blue;
+$callout-color-note: $emc-dark-blue;
+$callout-color-tip: $emc-green;
+$callout-color-warning: $emc-orange;
+$callout-color-caution: $emc-red;
+$callout-color-important: $emc-purple;
+$callout-border-width: 0.2rem;
+
+/*-- scss:rules --*/
+.reveal .slides section {
+  text-align: left;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+  color: $emc-dark-blue;
+  font-family: $font-family-sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: none;
+}
+
+.reveal h1 { font-size: 1.8em; }
+.reveal h2 { font-size: 1.45em; }
+.reveal h3 { font-size: 1.16em; }
+.reveal h4 { font-size: 1em; }
+
+.reveal p,
+.reveal li {
+  line-height: 1.35;
+}
+
+.reveal li:not(:last-child) {
+  margin-bottom: 0.3em;
+}
+
+.reveal ul { list-style-type: square; }
+.reveal ul ul { list-style-type: disc; }
+
+.reveal a {
+  color: $emc-dark-blue;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.reveal a:hover,
+.reveal a:focus-visible {
+  color: $emc-green;
+}
+
+.reveal .slide-number a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.reveal:has(.slides #title-slide.present) .slide-number,
+.reveal:has(.slides section.emc-no-number.present) .slide-number {
+  display: none !important;
+}
+
+.reveal a:focus-visible {
+  outline: 3px solid $emc-green;
+  outline-offset: 3px;
+}
+
+.reveal .progress { color: $emc-light-blue; }
+
+.reveal section#title-slide {
+  text-align: left;
+}
+
+.reveal #title-slide .emc-title-content {
+  width: 54%;
+  max-width: 680px;
+  box-sizing: border-box;
+}
+
+.reveal #title-slide h1.title {
+  font-size: 1.8em;
+  line-height: 1.08;
+  margin: 0 0 0.28em;
+}
+
+.reveal #title-slide .emc-series {
+  font-weight: 700;
+  margin: 0 0 0.35em;
+}
+
+.reveal #title-slide .subtitle {
+  font-size: 1.03em;
+  margin: 0 0 0.65em;
+}
+
+.reveal #title-slide .quarto-title-author {
+  font-size: 0.78em;
+  margin: 0 0 0.25em;
+}
+
+.reveal #title-slide .quarto-title-author span {
+  display: block;
+}
+
+.reveal #title-slide .date {
+  font-size: 0.72em;
+  margin: 0.55em 0 0;
+}
+
+.reveal .emcdblue { color: $emc-dark-blue; }
+.reveal .emclblue { color: $emc-light-blue; }
+.reveal .emcmblue { color: $emc-medium-blue; }
+.reveal .emcdbluevar { color: $emc-dark-blue-variant; }
+.reveal .emclbluevar { color: $emc-light-blue-variant; }
+.reveal .emclblue80 { color: $emclblue80; }
+.reveal .emcdblue80 { color: $emcdblue80; }
+.reveal .emcverylightblue { color: $emc-very-light-blue; }
+.reveal .emclightgrey { color: $emc-light-grey; }
+.reveal .emcgreen { color: $emc-green; }
+.reveal .emcred { color: $emc-red; }
+.reveal .emcpurple { color: $emc-purple; }
+.reveal .emclila { color: $emc-lilac; }
+.reveal .emcaccent { color: $emc-orange; }
+
+// A key term: bold in the theme accent, [local separation]{.emc-term}. Defined
+// before the named colors so a color class can change it, for example
+// [local separation]{.emc-term .emc-purple}.
+.reveal .emc-term {
+  color: $emc-green;
+  color: var(--emc-accent, #{$emc-green});
+  font-weight: 700;
+}
+
+// Short, readable aliases for text and colored callout boxes.
+$emc-palette: (
+  "dark-blue": $emc-dark-blue,
+  "light-blue": $emc-light-blue,
+  "medium-blue": $emc-medium-blue,
+  "dark-blue-variant": $emc-dark-blue-variant,
+  "light-blue-variant": $emc-light-blue-variant,
+  "dark-blue-80": $emcdblue80,
+  "light-blue-80": $emclblue80,
+  "very-light-blue": $emc-very-light-blue,
+  "green": $emc-green,
+  "red": $emc-red,
+  "purple": $emc-purple,
+  "lilac": $emc-lilac,
+  "orange": $emc-orange,
+  "light-grey": $emc-light-grey
+);
+
+@each $name, $value in $emc-palette {
+  .reveal .emc-#{$name} { color: $value; }
+  .reveal .emc-callout.emc-#{$name} {
+    --emc-callout-accent: #{$value};
+  }
+}
+
+.reveal .emc-theme-accent,
+.reveal .emc-accent { color: $emc-green; }
+
+.reveal .emc-callout {
+  --emc-callout-accent: #{$emc-dark-blue};
+  color: $emc-dark-blue;
+  background-color: $emc-pale-blue;
+  background-color: color-mix(in srgb, var(--emc-callout-accent) 12%, white);
+  border-left: 0.22em solid var(--emc-callout-accent);
+  box-sizing: border-box;
+  margin: 0.6em 0;
+  padding: 0.5em 0.7em;
+}
+
+.reveal .emc-callout > :first-child { margin-top: 0; }
+.reveal .emc-callout > :last-child { margin-bottom: 0; }
+
+.reveal .emc-important-box {
+  --emc-box-background: #{$emc-dark-blue};
+  --emc-box-foreground: #{$emc-white};
+  box-sizing: border-box;
+  margin: 0.7em 0;
+  padding: 0.7em 0.9em;
+  border-radius: 8px;
+  background: var(--emc-box-background);
+  color: var(--emc-box-foreground);
+  line-height: 1.25;
+}
+
+.reveal .emc-important-box > :first-child { margin-top: 0; }
+.reveal .emc-important-box > :last-child { margin-bottom: 0; }
+.reveal .emc-important-box p { color: inherit; }
+
+// Key terms on colored boxes stay bold in the box's text color.
+.reveal .emc-important-box .emc-term,
+.reveal .boxcontainer .emc-term {
+  color: inherit;
+}
+
+// Links on colored boxes take the box's text color; the underline marks them.
+.reveal .emc-important-box a,
+.reveal .boxcontainer a,
+.reveal .emc-important-box a:hover,
+.reveal .boxcontainer a:hover {
+  color: inherit;
+}
+
+$emc-box-palette: (
+  "dark-blue": ($emc-dark-blue, $emc-white),
+  "light-blue": ($emc-light-blue, $emc-dark-blue),
+  "medium-blue": ($emc-medium-blue, $emc-white),
+  "dark-blue-variant": ($emc-dark-blue-variant, $emc-white),
+  "light-blue-variant": ($emc-light-blue-variant, $emc-dark-blue),
+  "dark-blue-80": ($emcdblue80, $emc-dark-blue),
+  "light-blue-80": ($emclblue80, $emc-dark-blue),
+  "very-light-blue": ($emc-very-light-blue, $emc-dark-blue),
+  "green": ($emc-green, $emc-white),
+  "teal": ($emc-green, $emc-white),
+  "red": ($emc-red, $emc-white),
+  "purple": ($emc-purple, $emc-white),
+  "lilac": ($emc-lilac, $emc-dark-blue),
+  "orange": ($emc-orange, $emc-white),
+  "light-grey": ($emc-light-grey, $emc-dark-blue)
+);
+
+@each $name, $colors in $emc-box-palette {
+  .reveal .emc-important-box.emc-box-#{$name} {
+    --emc-box-background: #{nth($colors, 1)};
+    --emc-box-foreground: #{nth($colors, 2)};
+  }
+}
+
+.reveal .emc-important-box.emc-box-accent {
+  --emc-box-background: var(--emc-accent, #{$emc-green});
+  --emc-box-foreground: #{$emc-white};
+}
+
+.reveal .small-font { font-size: 0.8em; }
+
+// A small, muted reference line beneath a slide's content.
+.reveal .emc-citation {
+  font-size: 17px;
+  line-height: 1.25;
+  opacity: 0.75;
+}
+
+.reveal .emc-citation p { margin: 0.4em 0 0; }
+.reveal .center { text-align: center; }
+
+.reveal .column,
+.reveal .colored-column {
+  box-sizing: border-box;
+  padding: 0.5em;
+  background: $emc-pale-blue;
+}
+
+.reveal .colored-column { border-left: 0.18em solid $emc-dark-blue; }
+
+.reveal .boxspw {
+  background: $emc-light-blue;
+  border: 2px solid $emc-dark-blue;
+  margin: 0.4em 0;
+  padding: 0.4em;
+}
+
+.reveal .boxcontainer {
+  background: $emc-dark-blue;
+  color: $emc-white;
+  margin: 0.4em 0;
+  padding: 0.4em;
+}
+
+.reveal .boxcontainer h3,
+.reveal .boxcontainer h4,
+.reveal .boxcontainer h5,
+.reveal .boxcontainer h6 {
+  color: $emc-white;
+}
+
+.reveal .boxinterior {
+  background: $emc-light-blue;
+  color: $emc-dark-blue;
+  padding: 0.4em;
+}
+
+.reveal .spwwide li:not(:last-child) { margin-bottom: 0.65em; }
+.reveal .red-cross { color: #b3261e; }
+.reveal .green-checkmark { color: $emc-green; }
+
+.reveal table.spwtable,
+.reveal .spwtable table {
+  font-size: 0.8em;
+  border-collapse: collapse;
+}
+
+.reveal table.spwtable th,
+.reveal .spwtable table th {
+  background: $emc-dark-blue;
+  color: $emc-white;
+  font-weight: 700;
+}
+
+.reveal table.spwtable th,
+.reveal table.spwtable td,
+.reveal .spwtable table th,
+.reveal .spwtable table td {
+  border: 1px solid $emc-dark-blue;
+  padding: 0.25em 0.4em;
+  text-align: left;
+}
+
+.reveal table.spwtable tbody tr:nth-child(even),
+.reveal .spwtable table tbody tr:nth-child(even) {
+  background: $emc-pale-blue;
+}
+
+.reveal pre.sourceCode code { max-height: 60vh; }
+
+.reveal iframe {
+  display: block;
+  margin-inline: auto;
+}
+
+.reveal .center-xy {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

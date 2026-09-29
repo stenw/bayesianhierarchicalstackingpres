@@ -1,0 +1,1163 @@
+/* Erasmus MC PowerPoint-inspired layouts. Coordinates use a 1280 x 720 slide. */
+body:has(.emc-title-slide) .reveal {
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #0c2074;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide,
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide,
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide {
+  position: absolute;
+  box-sizing: border-box;
+  width: 1280px;
+  height: 720px;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+  text-align: left;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-theme-graduate {
+  --emc-accent: #5c37b4;
+  --emc-logo: url("layoutassets/logo.svg");
+  --emc-title-photo: url("layoutassets/title-lab.jpeg");
+  --emc-content-photo: url("layoutassets/content-lab.jpeg");
+  --emc-closing-photo: url("layoutassets/closing-lab.jpeg");
+  --emc-corner-pattern: url("layoutassets/squares-corner.svg");
+  --emc-photo-pattern: url("layoutassets/squares-photo.svg");
+  --emc-dark-photo: url("layoutassets/content-lab.jpeg");
+  --emc-dark-box-photo: url("layoutassets/content-lab.jpeg");
+  --emc-light-box-photo: url("layoutassets/content-lab.jpeg");
+  --emc-left-pattern: url("layoutassets/squares-left.svg");
+  --emc-panel-photo: url("layoutassets/content-lab.jpeg");
+  --emc-statement-photo: url("layoutassets/content-lab.jpeg");
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-theme-sophia {
+  --emc-accent: #db3324;
+  --emc-logo: url("layoutassets/sophia-logo.svg");
+  --emc-title-photo: url("layoutassets/sophia-title.jpg");
+  --emc-content-photo: url("layoutassets/sophia-content.jpeg");
+  --emc-closing-photo: url("layoutassets/sophia-closing.jpeg");
+  --emc-corner-pattern: url("layoutassets/squares-corner-sophia.svg");
+  --emc-photo-pattern: url("layoutassets/squares-photo-sophia.svg");
+  --emc-dark-photo: url("layoutassets/sophia-content.jpeg");
+  --emc-dark-box-photo: url("layoutassets/sophia-content.jpeg");
+  --emc-light-box-photo: url("layoutassets/sophia-content.jpeg");
+  --emc-left-pattern: url("layoutassets/squares-left-sophia.svg");
+  --emc-panel-photo: url("layoutassets/sophia-content.jpeg");
+  --emc-statement-photo: url("layoutassets/sophia-content.jpeg");
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-theme-general {
+  --emc-accent: #008080;
+  --emc-logo: url("layoutassets/general-logo.svg");
+  --emc-title-photo: url("layoutassets/general-title.jpeg");
+  --emc-content-photo: url("layoutassets/general-content.jpeg");
+  --emc-closing-photo: url("layoutassets/general-closing.jpeg");
+  --emc-corner-pattern: url("layoutassets/squares-corner-general.svg");
+  --emc-photo-pattern: url("layoutassets/squares-photo-general.svg");
+  --emc-dark-photo: url("layoutassets/general-dark-photo.png");
+  --emc-dark-box-photo: url("layoutassets/general-dark-box.jpg");
+  --emc-light-box-photo: url("layoutassets/general-light-box.jpg");
+  --emc-left-pattern: url("layoutassets/squares-left-general.svg");
+  --emc-panel-photo: url("layoutassets/general-panel-photo.jpg");
+  --emc-statement-photo: url("layoutassets/general-statement-photo.jpg");
+}
+
+body:has(.emc-title-slide) .reveal .slides section .emc-theme-accent,
+body:has(.emc-title-slide) .reveal .slides section .emc-accent {
+  color: var(--emc-accent, #008080);
+}
+
+/* The title and closing photos are the original embedded JPEGs from Presentation.emc. */
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide::before,
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 115px;
+  right: 0;
+  bottom: 0;
+  left: 485px;
+  background-size: cover;
+  background-position: center;
+  clip-path: polygon(67px 0, 100% 0, 100% 100%, 0 100%, 0 67px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide::before {
+  background-image: var(--emc-title-photo);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide::before {
+  background-image: var(--emc-closing-photo);
+}
+
+/* emc-title-image in the document YAML replaces the theme's title photo. It is
+   an <img> so that its path is relative to the document, not to this file. */
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide.emc-has-title-image::before {
+  content: none;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide .emc-title-image {
+  position: absolute;
+  z-index: 0;
+  top: 115px;
+  right: 0;
+  bottom: 0;
+  left: 485px;
+  overflow: hidden;
+  clip-path: polygon(67px 0, 100% 0, 100% 100%, 0 100%, 0 67px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide .emc-title-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  object-fit: cover;
+  object-position: var(--emc-title-image-position, center);
+  transform: scale(var(--emc-title-image-zoom, 1));
+  transform-origin: var(--emc-title-image-position, center);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide::after,
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 183px;
+  left: 0;
+  width: 640px;
+  height: 537px;
+  border-radius: 0 8px 0 0;
+  background: #86d2ed;
+}
+
+body:has(.emc-title-slide) .reveal .slides section .emc-brand-art {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  margin: 0;
+  pointer-events: none;
+  /* The last gradient layer draws eight complete 8px squares at 16px intervals. */
+  background-image: var(--emc-logo), var(--emc-photo-pattern),
+    repeating-linear-gradient(to right, #fff 0 8px, transparent 8px 16px);
+  background-position: 75px 58px, right bottom, 76px 525px;
+  background-size: 230px auto, 508px 332px, 120px 8px;
+  background-repeat: no-repeat;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide .emc-brand-art {
+  background-position: 75px 58px, right bottom, 76px 455px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide h1,
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide h2 {
+  position: absolute;
+  z-index: 2;
+  top: 225px;
+  left: 76px;
+  width: 510px;
+  margin: 0;
+  color: #0c2074;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 62px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+/* Subtitle, authors, and date stack below the square underline. */
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide .emc-title-meta {
+  position: absolute;
+  z-index: 2;
+  top: 548px;
+  left: 76px;
+  width: 500px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide .emc-title-meta p {
+  margin: 0 0 12px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide .emc-title-meta p:last-child {
+  margin-bottom: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide .emc-subtitle {
+  font-size: 27px;
+  line-height: 1.2;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide .emc-authors {
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-slide .emc-date {
+  color: #fff;
+  font-size: 27px;
+  line-height: 1.2;
+}
+
+/* Content pages use white to the edges, with the square motif in the corner.
+   The squares-*.svg files reproduce the PowerPoint square shapes exactly, at
+   their original size, so they are placed at the slide corner unscaled. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 75px;
+  bottom: 15px;
+  width: 95px;
+  height: 48px;
+  background: var(--emc-logo) center / contain no-repeat;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide:not(.emc-photo-slide)::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  width: 260px;
+  height: 258px;
+  background: var(--emc-corner-pattern) right bottom / 260px 258px no-repeat;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-photo-slide::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 390px;
+  background: var(--emc-content-photo) center / cover no-repeat;
+  clip-path: polygon(94px 0, 100% 0, 100% 100%, 0 100%, 0 94px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide h2 {
+  position: absolute;
+  z-index: 2;
+  top: 74px;
+  left: 76px;
+  width: 760px;
+  margin: 0;
+  color: #0c2074;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide h2::after {
+  content: "";
+  position: absolute;
+  top: 52px;
+  left: 0;
+  width: 120px;
+  height: 8px;
+  background: repeating-linear-gradient(to right, var(--emc-accent) 0 8px, transparent 8px 16px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content {
+  position: absolute;
+  z-index: 2;
+  top: 168px;
+  left: 76px;
+  width: 900px;
+  font-size: 25px;
+  line-height: 1.3;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-photo-slide .emc-slide-content {
+  width: 760px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content ul {
+  margin: 0 0 38px;
+  padding-left: 22px;
+  list-style-type: square;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content ul ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content li {
+  margin-bottom: 13px;
+  padding-left: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content p {
+  margin: 0 0 17px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content .emc-callout > :last-child {
+  margin-bottom: 0;
+}
+
+/* A paragraph that is entirely bold is a larger stand-out line; the layout
+   filter marks it. Bold words within a sentence keep the body size. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-standout {
+  font-size: 30px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide .emc-contacts {
+  position: absolute;
+  z-index: 2;
+  top: 575px;
+  left: 76px;
+  display: flex;
+  gap: 30px;
+  width: 540px;
+  font-size: 19px;
+  line-height: 1.1;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide .emc-contact {
+  width: 250px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide .emc-contact p {
+  margin: 0 0 12px;
+}
+
+/* Extra content layouts. All dimensions use the same 1280 x 720 canvas. */
+body:has(.emc-title-slide) .reveal .slides section.emc-title-high h2 {
+  top: 42px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-title-high .emc-slide-content {
+  top: 136px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-subtitle-slide .emc-slide-subtitle {
+  position: absolute;
+  z-index: 2;
+  top: 147px;
+  left: 76px;
+  width: 1040px;
+  color: #0c2074;
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-subtitle-slide .emc-slide-subtitle p {
+  margin: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-subtitle-slide .emc-slide-content {
+  top: 218px;
+}
+
+/* A kicker is a short line above the title, such as a section name:
+   ## Results {kicker="§5.1 Examples"}. The General PowerPoint places this
+   line above its content-slide titles. Photo layouts position it below. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-kicker {
+  position: absolute;
+  z-index: 2;
+  top: 45px;
+  left: 76px;
+  width: 1129px;
+  color: #0c2074;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-kicker p {
+  margin: 0;
+}
+
+/* Raised titles and statement slides leave room for the kicker at the top. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide:is(.emc-title-high, .emc-plot-slide, .emc-statement-slide) .emc-slide-kicker {
+  top: 14px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section .emc-image-layer,
+body:has(.emc-title-slide) .reveal .slides section .emc-image-layer p,
+body:has(.emc-title-slide) .reveal .slides section .emc-image-layer img {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section .emc-image-layer img {
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  object-position: var(--emc-image-position, center);
+}
+
+/* The class also works on the title slide through emc-hide-title-logo. */
+body:has(.emc-title-slide) .reveal .slides section.emc-no-logo {
+  --emc-logo: none;
+}
+
+/* .emc-no-squares, or emc-hide-squares: true for a whole deck, removes the
+   decorative square patterns. The title's square underline remains. */
+body:has(.emc-title-slide) .reveal .slides section.emc-no-squares {
+  --emc-corner-pattern: none;
+  --emc-photo-pattern: none;
+  --emc-left-pattern: none;
+}
+
+body:has(.emc-title-slide) .reveal .slide-number {
+  right: auto;
+  bottom: 22px;
+  left: 184px;
+  min-width: 30px;
+  padding: 0;
+  background: transparent;
+  color: #0c2074;
+  font: 700 18px/1 "Segoe UI", Arial, sans-serif;
+  text-align: center;
+}
+
+body:has(.emc-title-slide) .reveal:has(.slides section.emc-dark-photo-slide.present) .slide-number {
+  right: 105px;
+  left: auto;
+  color: #fff;
+}
+
+/* Keep the number on a plain background where the photo layouts cover the
+   usual position. The PowerPoint closing slides have no page number. */
+body:has(.emc-title-slide) .reveal:has(.slides section.emc-image-light-box.present) .slide-number {
+  left: 76px;
+}
+
+body:has(.emc-title-slide) .reveal:has(.slides section.emc-image-dark-box.present) .slide-number {
+  right: 58px;
+  left: auto;
+}
+
+body:has(.emc-title-slide) .reveal:has(.slides section.emc-closing-slide.present) .slide-number {
+  display: none !important;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-image-focus-left { --emc-image-position: left center; }
+body:has(.emc-title-slide) .reveal .slides section.emc-image-focus-right { --emc-image-position: right center; }
+body:has(.emc-title-slide) .reveal .slides section.emc-image-focus-top { --emc-image-position: center top; }
+body:has(.emc-title-slide) .reveal .slides section.emc-image-focus-bottom { --emc-image-position: center bottom; }
+body:has(.emc-title-slide) .reveal .slides section.emc-image-focus-center { --emc-image-position: center; }
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide {
+  background: var(--emc-dark-photo) center / cover no-repeat;
+  background-position: var(--emc-image-position, center);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide .emc-image-layer {
+  z-index: 0;
+  inset: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide.emc-dark-photo-slide::before {
+  display: none;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide::after {
+  z-index: 1;
+  top: 76px;
+  right: 75px;
+  bottom: 0;
+  left: 666px;
+  width: auto;
+  height: auto;
+  border-radius: 8px 8px 0 0;
+  background: #0c2074;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide h2 {
+  top: 141px;
+  left: 704px;
+  width: 445px;
+  color: #fff;
+  font-size: 43px;
+  line-height: 1.05;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide h2::after {
+  top: 100px;
+  background: repeating-linear-gradient(to right, #fff 0 8px, transparent 8px 16px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide .emc-slide-kicker {
+  position: absolute;
+  z-index: 2;
+  top: 108px;
+  left: 704px;
+  width: 445px;
+  color: #fff;
+  font-size: 21px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide .emc-slide-kicker p {
+  margin: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide .emc-slide-content {
+  top: 294px;
+  left: 704px;
+  width: 430px;
+  color: #fff;
+  font-size: 24px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide.emc-image-dark-box::before {
+  z-index: 0;
+  top: 167px;
+  right: auto;
+  bottom: 0;
+  left: 0;
+  width: 1134px;
+  height: auto;
+  background: var(--emc-dark-box-photo) center / cover no-repeat;
+  background-position: var(--emc-image-position, center);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-image-dark-box .emc-image-layer {
+  z-index: 0;
+  top: 167px;
+  left: 0;
+  width: 1134px;
+  height: 553px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-image-dark-box::after,
+body:has(.emc-title-slide) .reveal .slides section.emc-image-light-box::after {
+  display: none;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-image-dark-box .emc-slide-content {
+  top: 261px;
+  left: 885px;
+  box-sizing: border-box;
+  width: 320px;
+  min-height: 255px;
+  padding: 27px;
+  border-radius: 10px;
+  background: #0c2074;
+  color: #fff;
+  font-size: 23px;
+  line-height: 1.25;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide.emc-image-light-box::before {
+  z-index: 0;
+  top: 167px;
+  right: 0;
+  bottom: 0;
+  left: 207px;
+  width: auto;
+  height: auto;
+  background: var(--emc-light-box-photo) center / cover no-repeat;
+  background-position: var(--emc-image-position, center);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-image-light-box .emc-image-layer {
+  z-index: 0;
+  top: 167px;
+  right: 0;
+  left: 207px;
+  width: auto;
+  height: 553px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-image-light-box .emc-slide-content {
+  top: 232px;
+  left: 76px;
+  box-sizing: border-box;
+  width: 375px;
+  min-height: 383px;
+  padding: 27px;
+  border-radius: 10px;
+  background: #86d2ed;
+  color: #0c2074;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-image-light-box h2 {
+  width: 1100px;
+  font-size: 40px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-two-columns .emc-slide-content {
+  width: 1090px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-two-columns .emc-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-two-columns .emc-column > p:first-child strong {
+  margin: 0 0 18px;
+  color: var(--emc-accent);
+  font-size: 30px;
+}
+
+/* Mathematical content follows the same navy, light blue, and accent palette. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-equation {
+  margin: 12px 0 18px;
+  padding: 6px 0;
+  color: #0c2074;
+  font-size: 30px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-equation p {
+  margin: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content table {
+  width: 100%;
+  margin: 8px 0 22px;
+  border-collapse: collapse;
+  color: #0c2074;
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content table th {
+  padding: 13px 17px;
+  border: 0;
+  background: #0c2074;
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content table td {
+  padding: 13px 17px;
+  border: 0;
+  border-bottom: 1px solid #cfedf8;
+  text-align: left;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content table tbody tr:nth-child(even) {
+  background: #e4f6fb;
+}
+
+/* The older SPW table is intentionally gridded; ordinary tables stay simpler. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content .spwtable table,
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content table.spwtable {
+  font-size: 21px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content .spwtable table th,
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content .spwtable table td,
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content table.spwtable th,
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content table.spwtable td {
+  border: 1px solid #0c2074;
+  padding: 8px 12px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-important-box {
+  box-sizing: border-box;
+  margin: 22px 0;
+  padding: 22px 27px;
+  border-radius: 8px;
+  background: var(--emc-box-background, #0c2074);
+  color: var(--emc-box-foreground, #fff);
+  font-size: 25px;
+  line-height: 1.25;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-important-box p {
+  margin: 0;
+  color: inherit;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-important-box .emc-standout {
+  font-size: inherit;
+}
+
+/* Restore the earlier triangle layout's spacing in a zero-margin gallery. */
+body:has(.emc-title-slide) .reveal .slides section.emc-classic-slide {
+  box-sizing: border-box;
+  width: 1280px;
+  height: 720px;
+  padding: 62px 76px 55px;
+  background: transparent;
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 29px;
+  line-height: 1.35;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-classic-slide h2 {
+  margin: 0 0 33px;
+  font-size: 44px;
+}
+
+body:has(.emc-title-slide) .reveal:has(.slides section.emc-classic-slide.present) .slide-number {
+  right: 24px;
+  left: auto;
+}
+
+/* Links on dark or colored surfaces take the surrounding text color, so they
+   stay readable on navy panels and colored boxes. The underline marks them. */
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide .emc-slide-content a:not(.emc-button),
+body:has(.emc-title-slide) .reveal .slides section.emc-image-dark-box .emc-slide-content a:not(.emc-button),
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide :is(h2, .emc-slide-content) a:not(.emc-button),
+body:has(.emc-title-slide) .reveal .slides section .emc-important-box a:not(.emc-button),
+body:has(.emc-title-slide) .reveal .slides section .boxcontainer a:not(.emc-button) {
+  color: inherit;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide .emc-slide-content a:not(.emc-button):is(:hover, :focus-visible),
+body:has(.emc-title-slide) .reveal .slides section.emc-image-dark-box .emc-slide-content a:not(.emc-button):is(:hover, :focus-visible),
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide :is(h2, .emc-slide-content) a:not(.emc-button):is(:hover, :focus-visible),
+body:has(.emc-title-slide) .reveal .slides section .emc-important-box a:not(.emc-button):is(:hover, :focus-visible),
+body:has(.emc-title-slide) .reveal .slides section .boxcontainer a:not(.emc-button):is(:hover, :focus-visible) {
+  color: inherit;
+  text-decoration-thickness: 3px;
+}
+
+/* A link shown as a button, as on General slide 29:
+   [Public annual report](https://...){.emc-button} */
+body:has(.emc-title-slide) .reveal .slides section .emc-button,
+body:has(.emc-title-slide) .reveal .slides section .emc-button:is(:hover, :focus-visible) {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 18px;
+  border-radius: 5px;
+  background: var(--emc-button-background, #0c2074);
+  color: var(--emc-button-text, #fff);
+  font-size: 19px;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+body:has(.emc-title-slide) .reveal .slides section .emc-button::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--emc-accent, #008080);
+  border-bottom: 2px solid var(--emc-accent, #008080);
+  transform: rotate(-45deg);
+}
+
+body:has(.emc-title-slide) .reveal .slides section:is(.emc-statement-slide, .emc-dark-photo-slide, .emc-image-dark-box) {
+  --emc-button-background: #fff;
+  --emc-button-text: #0c2074;
+}
+
+/* Three cards with colored headers, based on General slide 12. The first
+   bold line of each column becomes the card header: dark blue, light blue,
+   and the theme accent. */
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns {
+  background: linear-gradient(to bottom, #eef1fd 0, #fefeff 174px, #fff 185px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide.emc-three-columns::before {
+  right: auto;
+  left: 0;
+  width: 264px;
+  height: 258px;
+  background: var(--emc-left-pattern) left bottom / 264px 258px no-repeat;
+}
+
+/* The squares fill the lower-left corner, so the logo moves to the right. */
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns::after {
+  right: 75px;
+  left: auto;
+}
+
+body:has(.emc-title-slide) .reveal:has(.slides section.emc-three-columns.present) .slide-number {
+  right: 184px;
+  left: auto;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns h2 {
+  width: 1129px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-slide-content {
+  top: 167px;
+  width: 1129px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 39px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-column {
+  --emc-card-header: #0c2074;
+  --emc-card-header-text: #fff;
+  box-sizing: border-box;
+  min-height: 444px;
+  padding: 0 27px 22px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 0 27px rgba(0, 0, 0, 0.1);
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+/* Shorter cards leave room for a citation line above the corner squares. */
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-slide-content:has(> .emc-columns ~ :not(.notes)) .emc-column {
+  min-height: 400px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-column:nth-child(2) {
+  --emc-card-header: #86d2ed;
+  --emc-card-header-text: #0c2074;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-column:nth-child(3) {
+  --emc-card-header: var(--emc-accent);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-column > p:first-child:has(> .emc-standout) {
+  box-sizing: border-box;
+  min-height: 141px;
+  margin: 0 -27px 22px;
+  padding: 40px 27px 20px;
+  border-radius: 5px;
+  background: var(--emc-card-header);
+  color: var(--emc-card-header-text);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-column > p:first-child .emc-standout {
+  font-size: inherit;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-column ul {
+  margin: 0 0 16px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-three-columns .emc-column li {
+  margin-bottom: 10px;
+}
+
+/* A light blue text panel beside a photo, based on General slide 28. The
+   title and text are in normal flow, so a longer title moves the text down. */
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide {
+  padding: 205px 0 0 76px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide.emc-light-photo-slide::before {
+  z-index: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 455px;
+  width: auto;
+  height: auto;
+  background: var(--emc-panel-photo) center / cover no-repeat;
+  background-position: var(--emc-image-position, center);
+  clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide .emc-image-layer {
+  z-index: 0;
+  top: 0;
+  right: 0;
+  left: 455px;
+  width: auto;
+  height: 720px;
+  clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px);
+}
+
+/* The panel carries the lower-left squares instead of the footer logo. */
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide::after {
+  top: 144px;
+  right: auto;
+  bottom: 0;
+  left: 0;
+  width: 620px;
+  height: auto;
+  border-radius: 0 11px 0 0;
+  background: var(--emc-left-pattern) left bottom / 264px 258px no-repeat, #86d2ed;
+}
+
+body:has(.emc-title-slide) .reveal:has(.slides section.emc-light-photo-slide.present) .slide-number {
+  left: 560px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide .emc-slide-kicker {
+  position: absolute;
+  z-index: 2;
+  top: 174px;
+  left: 76px;
+  width: 526px;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide .emc-slide-kicker p {
+  margin: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide h2 {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 526px;
+  font-size: 43px;
+  line-height: 1.05;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide h2::after {
+  top: auto;
+  bottom: -14px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide .emc-slide-content {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 509px;
+  margin-top: 52px;
+  font-size: 22px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-light-photo-slide .emc-standout {
+  font-size: 24px;
+}
+
+/* A short statement in a box over a photo, based on General slide 29. The
+   heading is the statement; the box grows with the text below it. */
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide {
+  padding: 159px 0 0 76px;
+  background: #e7f6fb;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide.emc-statement-slide::before {
+  z-index: 0;
+  top: 45px;
+  right: 0;
+  bottom: 0;
+  left: 376px;
+  width: auto;
+  height: auto;
+  background: var(--emc-statement-photo) center / cover no-repeat;
+  background-position: var(--emc-image-position, center);
+  clip-path: polygon(65px 0, 100% 0, 100% 100%, 0 100%, 0 65px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide .emc-image-layer {
+  z-index: 0;
+  top: 45px;
+  right: 0;
+  left: 376px;
+  width: auto;
+  height: 675px;
+  clip-path: polygon(65px 0, 100% 0, 100% 100%, 0 100%, 0 65px);
+}
+
+/* The photo's square pattern replaces the footer logo on this layout. */
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide::after {
+  top: auto;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  width: 508px;
+  height: 332px;
+  background: var(--emc-photo-pattern) right bottom / 508px 332px no-repeat;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide h2 {
+  position: relative;
+  top: auto;
+  left: auto;
+  box-sizing: border-box;
+  width: 555px;
+  padding: 67px 33px 16px;
+  border-radius: 14px 14px 0 0;
+  background: var(--emc-accent);
+  color: #fff;
+  font-size: 43px;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide h2::after {
+  top: 43px;
+  left: 33px;
+  background: repeating-linear-gradient(to right, #0c2074 0 8px, transparent 8px 16px);
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide .emc-slide-content {
+  position: relative;
+  top: auto;
+  left: auto;
+  box-sizing: border-box;
+  width: 555px;
+  min-height: 120px;
+  padding: 4px 33px 44px;
+  border-radius: 0 0 0 14px;
+  background: var(--emc-accent);
+  color: #fff;
+  font-size: 21px;
+  line-height: 1.35;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 70px), calc(100% - 84px) 100%, 0 100%);
+}
+
+/* A plot in two thirds of the slide and its explanation in the other third.
+   The two areas are fixed, so text and plot never overlap, and the corner
+   squares are left out of the plot area. .emc-plot-left mirrors the layout. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide.emc-plot-slide::before {
+  display: none;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide h2 {
+  top: 42px;
+  width: 1129px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide .emc-plot-text {
+  top: 136px;
+  width: 351px;
+  font-size: 22px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide .emc-plot {
+  --emc-plot-image-height: 560px;
+  position: absolute;
+  z-index: 2;
+  top: 120px;
+  left: 451px;
+  width: 789px;
+  height: 560px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide .emc-plot:has(figcaption) {
+  --emc-plot-image-height: 505px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide .emc-plot :is(div, figure, p) {
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Scale the plot to fill its area without distortion, overriding a width
+   given in the Markdown. */
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide .emc-plot img {
+  display: block;
+  width: 100% !important;
+  max-width: none;
+  height: var(--emc-plot-image-height) !important;
+  max-height: none;
+  margin: 0;
+  object-fit: contain;
+  object-position: center top;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide .emc-plot figcaption {
+  margin-top: 8px;
+  font-size: 18px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide.emc-plot-left .emc-plot {
+  left: 40px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide.emc-plot-left .emc-plot-text {
+  left: 853px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide.emc-plot-left::after {
+  right: 75px;
+  left: auto;
+}
+
+body:has(.emc-title-slide) .reveal:has(.slides section.emc-plot-left.present) .slide-number {
+  right: 184px;
+  left: auto;
+}
+
+/* Key terms (.emc-term) on dark or colored surfaces: light blue on the dark
+   blue panels, as General slide 5 highlights its closing line, and bold in
+   the box's own color on colored boxes. */
+body:has(.emc-title-slide) .reveal .slides section:is(.emc-dark-photo-slide, .emc-image-dark-box) .emc-slide-content .emc-term {
+  color: #86d2ed;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-statement-slide :is(h2, .emc-slide-content) .emc-term,
+body:has(.emc-title-slide) .reveal .slides section .emc-important-box .emc-term {
+  color: inherit;
+}
+
+/* A citation (::: {.emc-citation}, or ::: {.attribution}) is a line at the
+   bottom of the slide, beside the logo and page number. Longer citations grow
+   upward. The layout filter moves it out of the slide content. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide > .emc-footer-citation {
+  position: absolute;
+  z-index: 2;
+  bottom: 22px;
+  left: 270px;
+  width: 730px;
+  margin: 0;
+  color: #0c2074;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide > .emc-footer-citation p {
+  margin: 0;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-photo-slide > .emc-footer-citation {
+  width: 600px;
+}
+
+/* On the dark photo layout the line sits at the foot of the dark blue panel. */
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide > .emc-footer-citation {
+  left: 704px;
+  width: 400px;
+  color: #fff;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-dark-photo-slide > .emc-footer-citation a {
+  color: inherit;
+}
+
+/* The logo and number move right on these layouts, freeing the lower left. */
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide.emc-plot-left > .emc-footer-citation {
+  left: 76px;
+  width: 740px;
+}
+
+/* Keep the plot above the citation line. */
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide:has(> .emc-footer-citation) .emc-plot {
+  --emc-plot-image-height: 520px;
+  height: 520px;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-plot-slide:has(> .emc-footer-citation) .emc-plot:has(figcaption) {
+  --emc-plot-image-height: 465px;
+}
+
+/* image="preset-or-path" on a closing slide replaces the theme's photo. */
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide:has(> .emc-image-layer)::before {
+  content: none;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-slide .emc-image-layer {
+  z-index: 0;
+  top: 115px;
+  right: 0;
+  bottom: 0;
+  left: 485px;
+  width: auto;
+  height: auto;
+  clip-path: polygon(67px 0, 100% 0, 100% 100%, 0 100%, 0 67px);
+}

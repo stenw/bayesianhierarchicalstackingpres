@@ -1,0 +1,88 @@
+/*
+ * Deck-level options layered after the EMC extension's emc-slides.css.
+ * Add the named class to a slide heading in bayesian-hierarchical-stacking.qmd;
+ * these rules do not modify the supplied template or its image files.
+ * The body/reveal prefix matches the template's selector scope.
+ */
+
+/*
+ * Equal-height paired boxes: slides 14, 17, and 22 use .emc-equal-boxes.
+ * The two-column grid determines the height of its taller column. Stretch both
+ * columns to that row height, then let each box fill its column. The box
+ * content still determines the minimum height, so no fixed pixel height is
+ * needed when text changes.
+ */
+body:has(.emc-title-slide) .reveal .slides section.emc-equal-boxes .emc-columns {
+  align-items: stretch;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-equal-boxes .emc-column {
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(.emc-title-slide) .reveal .slides section.emc-equal-boxes .emc-column > .emc-important-box {
+  flex: 1;
+}
+
+/*
+ * Section opener (slide 12): .emc-bottom-blur affects only its image layer.
+ * ::before puts a 16 px backdrop blur over the image. Its alpha mask blends
+ * the blurred image in from 38% of the image height to full strength at the
+ * bottom. The almost transparent background enables the backdrop filter.
+ * The image layer already has the template's clipped shape, so these overlays
+ * follow that shape and leave the text panel untouched.
+ */
+body:has(.emc-title-slide) .reveal .slides section.emc-bottom-blur .emc-image-layer::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.01);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 38%, rgba(0, 0, 0, 0.35) 65%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 38%, rgba(0, 0, 0, 0.35) 65%, #000 100%);
+}
+
+/* A separate white overlay fades dark greys upward toward the lower edge.
+ * It also gives a soft fade in browsers without backdrop-filter support. */
+body:has(.emc-title-slide) .reveal .slides section.emc-bottom-blur .emc-image-layer::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 38%, rgba(255, 255, 255, 0.16) 66%, rgba(255, 255, 255, 0.52) 100%);
+}
+
+/* Closing slide (slide 27): blur only the lower part of bluecode.jpg.
+ * There is no white fade here, so the template photo keeps its dark palette. */
+body:has(.emc-title-slide) .reveal .slides section.emc-closing-bottom-blur .emc-image-layer::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.01);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 52%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 52%, #000 100%);
+}
+
+/* Give a takeaway after two boxed columns a clearer pause (slides 14/17). */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-slide-content .emc-separated-summary {
+  margin-top: 1.3em;
+}
+
+/* Keep the two formulas on slide 11 readable without crowding its notes line.
+ * The class is intentionally deck-specific; ordinary template equations keep
+ * their normal font size and spacing. */
+body:has(.emc-title-slide) .reveal .slides section.emc-content-slide .emc-equation.emc-forward-equation {
+  font-size: 25px;
+  line-height: 1.15;
+  margin: 6px 0 10px;
+  padding: 2px 0;
+}

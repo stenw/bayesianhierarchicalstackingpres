@@ -1,0 +1,8 @@
+# Quarto's local output is deployed by `quarto publish gh-pages --no-render`.
+/.quarto/
+/bayesian-hierarchical-stacking.html
+/bayesian-hierarchical-stacking_files/
+
+# Local bundle and Quarto workaround directory are not source files.
+/bayesian-hierarchical-stacking-presentation.zip
+/.localappdata/

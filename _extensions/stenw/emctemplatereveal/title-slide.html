@@ -1,0 +1,51 @@
+$if(emc-theme)$
+<section id="$idprefix$title-slide" class="emc-title-slide emc-theme-$emc-theme$$if(emc-hide-title-logo)$ emc-no-logo$endif$$if(emc-hide-squares)$ emc-no-squares$endif$$if(emc-title-image)$ emc-has-title-image$endif$">
+$if(emc-title-image)$
+  <div class="emc-title-image" aria-hidden="true" style="$if(emc-title-image-position)$--emc-title-image-position: $emc-title-image-position$;$endif$$if(emc-title-image-zoom)$ --emc-title-image-zoom: $emc-title-image-zoom$;$endif$"><img src="$emc-title-image$" alt=""></div>
+$endif$
+  <div class="emc-brand-art" aria-hidden="true"></div>
+  <h1>$title$</h1>
+  <div class="emc-title-meta">
+$if(subtitle)$
+    <p class="emc-subtitle">$subtitle$</p>
+$endif$
+$if(by-author)$
+    <p class="emc-authors">$for(by-author)$$by-author.name.literal$$sep$, $endfor$</p>
+$endif$
+$if(date)$
+    <p class="emc-date">$date$</p>
+$endif$
+  </div>
+</section>
+$else$
+<section id="$idprefix$title-slide" $for(title-slide-attributes/pairs)$ $it.key$="$it.value$"$endfor$>
+  <div class="emc-title-content">
+$if(series)$
+    <p class="emc-series">$series$</p>
+$endif$
+    <h1 class="title">$title$</h1>
+$if(subtitle)$
+    <p class="subtitle">$subtitle$</p>
+$endif$
+$for(by-author)$
+    <div class="quarto-title-author">
+      <span class="quarto-title-author-name">
+$if(by-author.url)$<a href="$by-author.url$">$endif$$by-author.name.literal$$if(by-author.url)$</a>$endif$
+      </span>
+$if(by-author.email)$
+      <span class="quarto-title-author-email"><a href="mailto:$by-author.email$">$by-author.email$</a></span>
+$endif$
+$if(by-author.orcid)$
+      <span class="quarto-title-author-orcid"><a href="https://orcid.org/$by-author.orcid$">ORCID</a></span>
+$endif$
+$for(by-author.affiliations)$
+      <span class="quarto-title-affiliation">$if(it.url)$<a href="$it.url$">$endif$$it.name$$if(it.url)$</a>$endif$</span>
+$endfor$
+    </div>
+$endfor$
+$if(date)$
+    <p class="date">$date$</p>
+$endif$
+  </div>
+</section>
+$endif$
