@@ -43,21 +43,30 @@ The R script needs only base R. The Quarto file uses the Markdown engine, so it 
 
 ## GitHub Pages
 
-This directory is already a Git repository on `main`, but it has no commits or remote. Create an **empty** GitHub repository first (do not initialize it with a README, license, or `.gitignore`). Replace `USERNAME` and `REPOSITORY` below with its actual owner and name. In PowerShell, run these commands from this directory:
+The first publication omitted five images: four PNGs under `assets/` and `Bayesianhierarchicalstacking_Page_01.jpg`. Reveal references them through lazy-loaded `data-src` attributes, which were absent from the published file set. They are now listed under `resources:` in the Quarto source. Adding them to `main` alone does not repair the already published `gh-pages` branch.
+
+The `gh-pages-ready/` folder is a complete, locally rendered site: `index.html`, the named HTML file, all support files, the template, both stylesheets, the `assets/` images, the paper-page image, and `.nojekyll`. Its HTML has 32 local file references, all present in that folder. To replace the current deployment **and give the `gh-pages` branch a fresh one-commit history**, run the following in PowerShell. The first three commands save the resource declaration on `main`; the remaining commands publish the prepared site. Run them from the project folder:
 
 ```powershell
-git add -- .gitignore bayesian-hierarchical-stacking.qmd deck-tweaks.css README-presentation.md _extensions/stenw/emctemplatereveal assets Bayesianhierarchicalstacking_Page_01.jpg
-git diff --cached --stat
-git commit -m "Add Quarto stacking presentation"
-git remote add origin https://github.com/USERNAME/REPOSITORY.git
-git push -u origin main
+git add -- bayesian-hierarchical-stacking.qmd README-presentation.md .gitignore
+git commit -m "Include presentation images in publishing"
+git push origin main
 
-quarto render bayesian-hierarchical-stacking.qmd
-quarto publish gh-pages bayesian-hierarchical-stacking.qmd --no-render
+Set-Location .\gh-pages-ready
+git init -b gh-pages
+git add .
+git commit -m "Publish complete presentation"
+git remote add origin https://github.com/stenw/bayesianhierarchicalstackingpres.git
+git fetch origin gh-pages
+git push --force-with-lease origin HEAD:gh-pages
+
+Set-Location ..
+git fetch origin gh-pages
+git branch -f gh-pages origin/gh-pages
 ```
 
-The explicit `git add` stages the source, local CSS, extension, and referenced images; it leaves the many scratch files and the source PDF out of the commit. Review the staged list before committing. `.gitignore` keeps the locally rendered HTML and support folder on disk for `--no-render` without checking them into `main`. This is **one manual source commit**; Quarto creates and pushes the `gh-pages` deployment branch on the first publish. For a normal project repository, the address is `https://USERNAME.github.io/REPOSITORY/`. If the repository is named `USERNAME.github.io`, select `gh-pages` as the Pages source under GitHub **Settings → Pages** after the first publish. GitHub Pages sites are publicly accessible, including sites backed by eligible private repositories.
+`--force-with-lease` replaces `gh-pages` only if nobody has pushed to it since the fetch. It leaves `main` unchanged. The last two commands update this source checkout's local `gh-pages` pointer too, so a later Quarto publish starts from the replacement history. The old broken commits will disappear from the branch's visible history, though rewriting a branch cannot guarantee that GitHub caches or someone else's clone no longer retain the old commit objects. Once GitHub Pages finishes deploying, refresh `https://stenw.github.io/bayesianhierarchicalstackingpres/`.
 
-For later updates, render locally again, commit and push only changed source files, then run the same `quarto publish gh-pages ... --no-render` command. See the [Quarto GitHub Pages guide](https://quarto.org/docs/publishing/github-pages.html) for the publishing behavior and [GitHub Pages settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site) for the visibility and source options.
+For later updates, render locally, commit and push changed source files, then use `quarto publish gh-pages bayesian-hierarchical-stacking.qmd --no-render`. The source's `resources:` entry is intended to keep these images in future publishes. See the [Quarto resource option](https://quarto.org/docs/reference/formats/presentations/revealjs.html) and [GitHub Pages guide](https://quarto.org/docs/publishing/github-pages.html).
 
 Source: Yao, Y., Pirš, G., Vehtari, A., & Gelman, A. (2022). Bayesian Hierarchical Stacking: Some Models Are (Somewhere) Useful. *Bayesian Analysis*, 17(4), 1043–1071. https://doi.org/10.1214/21-BA1287

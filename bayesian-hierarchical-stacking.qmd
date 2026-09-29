@@ -3,6 +3,11 @@ title: "Bayesian hierarchical stacking"
 subtitle: "Some models are (somewhere) useful"
 author: "Summary of Yao, Pirš, Vehtari & Gelman (2022)"
 emc-theme: general
+# These images are referenced by Reveal's lazy-loaded data-src attributes.
+# Declare them explicitly so `quarto publish gh-pages` includes them.
+resources:
+  - assets/*.png
+  - Bayesianhierarchicalstacking_Page_01.jpg
 format:
   emctemplatereveal-revealjs:
     css:

@@ -6,3 +6,4 @@
 # Local bundle and Quarto workaround directory are not source files.
 /bayesian-hierarchical-stacking-presentation.zip
 /.localappdata/
+/gh-pages-ready/
