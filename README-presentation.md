@@ -1,10 +1,5 @@
 # Bayesian hierarchical stacking presentation
 
-The related R and Stan landmark simulation has been transferred to the
-[dynamic-predictions research repository in pull request #1](https://github.com/Mebgits/Dynamic-Predictions-With-Time-Shifting-Weights/pull/1).
-The local `landmark-stacking/` folder is the original copy kept with this
-presentation.
-
 Open `bayesian-hierarchical-stacking.html` for the finished deck, or edit `bayesian-hierarchical-stacking.qmd`. Keep `assets/`, `Bayesianhierarchicalstacking_Page_01.jpg`, `_extensions/`, `deck-tweaks.css`, and `bayesian-hierarchical-stacking_files/` beside the HTML file. The original `bayesian-hierarchical-stacking-alt.qmd` remains as the design reference.
 
 The content slides use the layouts from the alt deck. The title slide uses the template's **General** photo and title layout, without the alt deck's article-page image override. The deck uses version 2.4.0 of the supplied `emctemplatereveal` extension, with the unreleased section-line, key-term, citation-line, and closing-image additions. The extension's CSS and images were not changed. `deck-tweaks.css` gives paired boxes equal height on slides 14, 17, and 22; adds a gradual blur and pale fade to the Section 3 opening image and a gentler lower-image blur to the closing slide; adds spacing below two-column boxes; and sizes the forward-validation equations.

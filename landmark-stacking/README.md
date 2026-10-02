@@ -1,9 +1,5 @@
 # Landmark prediction with subject-level stacking
 
-This folder is the original presentation-repository copy. The study has been
-transferred to the research repository in [pull request #1](https://github.com/Mebgits/Dynamic-Predictions-With-Time-Shifting-Weights/pull/1).
-Use that pull request to review the transfer and find the current research copy.
-
 This is a small, synthetic R and Stan simulation inspired by Yao et al. (2022),
 *Bayesian Hierarchical Stacking: Some Models Are (Somewhere) Useful*. The design
 combines the paper's input-dependent weights, its forward-looking treatment of
