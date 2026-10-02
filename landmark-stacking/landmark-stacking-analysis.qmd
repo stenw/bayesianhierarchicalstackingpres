@@ -1,0 +1,549 @@
+---
+title: "Dynamic stacking for landmark prediction in new patients"
+subtitle: "A small R–Stan simulation and the relevant definition of PSIS-LOO"
+date: 2026-10-02
+bibliography: references.bib
+format:
+  html:
+    toc: true
+    number-sections: true
+    code-fold: true
+    theme: cosmo
+    embed-resources: true
+    self-contained-math: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+result_dir <- "output"
+needed <- c("overall.csv", "by_replicate.csv",
+            "by_group_horizon.csv", "weights.csv",
+            "psis_scores.csv", "psis_diagnostics.csv")
+missing <- needed[!file.exists(file.path(result_dir, needed))]
+if (length(missing) > 0L) {
+  stop("Run Rscript simulation.R first. Missing: ",
+       paste(missing, collapse = ", "))
+}
+overall <- read.csv(file.path(result_dir, "overall.csv"))
+by_replicate <- read.csv(file.path(result_dir, "by_replicate.csv"))
+by_group <- read.csv(file.path(result_dir, "by_group_horizon.csv"))
+weights <- read.csv(file.path(result_dir, "weights.csv"))
+psis_scores <- read.csv(file.path(result_dir, "psis_scores.csv"))
+psis_diagnostics <- read.csv(file.path(result_dir, "psis_diagnostics.csv"))
+```
+
+## Question and prediction target
+
+We fit candidate longitudinal models to a set of patients with complete
+trajectories. For a *new* patient, we observe the baseline covariate and
+marker history through visit 3, then predict the marker separately at
+visits 4, 5, and 6. The prediction made for visit 6 does **not** use the
+patient's outcomes at visits 4 or 5. In this simulation all visits are
+observed; censoring and irregular visits have not yet been modeled.
+
+Let $\mathcal D_{-i}$ denote all training patients except patient $i$,
+$x_i$ the baseline group, $H_i=(y_{i0},\ldots,y_{i3})$, and
+$F_i=(y_{i4},y_{i5},y_{i6})$. For candidate model $k$, the
+cross-validated quantity needed to train the stacking weights is
+
+$$
+p^{\mathrm{LM}}_{k,-i}(i,t)
+=p_k(y_{it}\mid H_i,x_i,\mathcal D_{-i}),
+\qquad t\in\{4,5,6\}. \tag{1}
+$$
+
+The held-out patient is absent from model fitting, while their history is
+allowed to inform prediction at the landmark. Equation (1) is the score for
+the actual deployment task: predict a future measurement for a new patient
+whose earlier measurements are already available.
+
+## Relationship to Yao, Pirš, Vehtari, and Gelman
+
+The paper's longitudinal extension is in **§2.5** and its election
+back-testing example is in **§5.3**. Section 3 develops arguments about
+when input-dependent stacking may help. Section 6.1 briefly proposes
+leave-one-*cell*-out densities when the target is a new cell [@yao2022].
+Our study combines these ideas for a new patient observed through a fixed
+landmark. The combination and the formulas below are our extension; the
+paper does not establish a performance theorem for this clinical task.
+
+| Aspect | Paper | This study |
+|:--|:--|:--|
+| Predictive unit | Usually an observation; §6.1 sketches a new cell | A patient is excluded as one cluster |
+| Longitudinal score | One-unit or one-week-ahead prediction from earlier data | Fixed landmark, with three separate future horizons |
+| Information from target unit | New-cell formula excludes the cell; longitudinal example uses past polling data | Held-out patient's visits 0–3 are revealed at prediction time |
+| Model weights | Hierarchical, input-dependent softmax weights | Two-model logistic weight using baseline group, horizon, and their interaction |
+| Cross-validation computation | Often PSIS to avoid repeated model fits | Exact leave-one-patient-out refits and two patient-level PSIS approximations |
+| Evaluation | Varies by application | Separate untouched patients, scored by conditional future log density |
+
+The history affects each candidate's predictive distribution through
+Gaussian conditioning of the patient-specific random intercept and slope.
+The *stacking weights themselves* currently use baseline group and
+horizon, but no summary of the observed marker history. Thus the ensemble
+is history-informed even though its gate does not directly vary with
+history. Adding a history summary to the gate is a possible next
+simulation condition.
+
+## Base models and exact leave-patient-out scoring
+
+The synthetic outcome has a random intercept and slope. Group 1 has both a
+different linear trend and an upward bend after the landmark; group 0 has
+no bend. The linear candidate omits the bend. The curved candidate
+includes the bend but omits the group-specific linear trend. Both
+candidates are Gaussian mixed models fit using
+[`base_model.stan`](base_model.stan). Neither candidate exactly matches
+the data-generating mean.
+
+For each patient $i$, we refit both candidates to $\mathcal D_{-i}$,
+then score the three future measurements using only $H_i$. Let
+$\theta_k$ be population parameters and $b_i$ the new patient's
+random effects. For a set of visits $A$, define the marginal density
+
+$$
+m_{ki}(A\mid\theta_k)
+=\int p_k(y_{i,A}\mid b_i,x_i,\theta_k)
+       p_k(b_i\mid\theta_k)\,db_i. \tag{2}
+$$
+
+Here the integral over $b_i$ is available analytically: the selected
+visits have a multivariate normal distribution with covariance from the
+random intercept, random slope, and measurement error. With
+$A_H=\{0,1,2,3\}$, the target in (1) is
+
+$$
+p^{\mathrm{LM}}_{k,-i}(i,t)
+=
+\frac{
+  \int m_{ki}(A_H\cup\{t\}\mid\theta_k)
+       p_k(\theta_k\mid\mathcal D_{-i})\,d\theta_k
+}{
+  \int m_{ki}(A_H\mid\theta_k)
+       p_k(\theta_k\mid\mathcal D_{-i})\,d\theta_k
+}. \tag{3}
+$$
+
+To see why (3) is exactly the conditional density in (1), start with
+the definition of conditional probability:
+
+$$
+p_k(y_{it}\mid H_i,x_i,\mathcal D_{-i})
+=
+\frac{p_k(H_i,y_{it}\mid x_i,\mathcal D_{-i})}
+     {p_k(H_i\mid x_i,\mathcal D_{-i})}.
+$$
+
+The numerator predicts the *joint* observations at visits
+$A_H\cup\{t\}$ from the other patients; the denominator predicts the
+history alone. Within either quantity, first integrate the new
+patient's random effects as in (2), then average over the population
+posterior fitted to $\mathcal D_{-i}$. Those two averages are precisely
+the numerator and denominator of (3). The denominator matters because
+the observed history changes which population-parameter draws are
+plausible for this patient. Neither average includes the other
+post-landmark outcomes.
+
+Bayes' rule makes the same point in a second form:
+
+$$
+p_k(\theta_k\mid \mathcal D_{-i},H_i,x_i)
+=
+\frac{m_{ki}(A_H\mid\theta_k)
+      p_k(\theta_k\mid\mathcal D_{-i})}
+     {\int m_{ki}(A_H\mid\vartheta)
+      p_k(\vartheta\mid\mathcal D_{-i})\,d\vartheta},
+\qquad
+p_k(y_{it}\mid H_i,x_i,\theta_k)
+=\frac{m_{ki}(A_H\cup\{t\}\mid\theta_k)}
+       {m_{ki}(A_H\mid\theta_k)}.
+$$
+
+Multiplying these expressions and integrating over $\theta_k$
+cancels the two factors of $m_{ki}(A_H\mid\theta_k)$ inside the
+integral, leaving (3). This is also what the simulation code computes:
+it weights posterior draws by their history likelihood and averages
+each draw's conditional Gaussian future density.
+
+The code in [`simulation.R`](simulation.R) uses the second form. It also
+integrates out the held-out patient's random effects; using a fitted
+random effect estimated from that patient's full trajectory would leak
+future data.
+
+## What “PSIS-LOO” means for this task
+
+Ordinary row-wise PSIS-LOO would hold out one measurement while leaving
+the same patient's other future measurements in the model fit. That
+answers a different question. Calling `loo()` on one full-trajectory
+likelihood contribution per patient would instead estimate
+$p_k(H_i,F_i\mid\mathcal D_{-i})$, which is also **not** the conditional
+landmark target in (1). The required likelihood contribution is
+patient-level and marginal over that patient's random effects.
+
+Let $A_{\mathrm{all}}=\{0,\ldots,6\}$ and write
+$\ell^A_{ki}(\theta)=\log m_{ki}(A\mid\theta)$.
+Suppose $\theta_k^{(s)}$, $s=1,\ldots,S$, are draws from one
+full-data fit $p_k(\theta_k\mid\mathcal D)$. The following two routes
+reuse those draws to approximate the conditional target in (1).
+Some raw ratios can be very large: a draw that was rare under the
+full-data posterior may become important when patient $i$'s future is
+removed. PSIS stabilizes the largest ratios using a fitted Pareto tail,
+then normalizes the smoothed weights. Its Pareto $\widehat k$ and
+effective sample size describe whether the reweighted draws adequately
+represent the target posterior [@vehtari2024].
+
+### Remove the whole patient, then use the history
+
+Importance sampling lets us estimate an expectation under one posterior
+using draws from another. For patient $i$, the full-data posterior has
+the factorization
+
+$$
+p_k(\theta_k\mid\mathcal D)
+\propto p_k(\theta_k\mid\mathcal D_{-i})
+          m_{ki}(A_{\mathrm{all}}\mid\theta_k).
+$$
+
+Thus draws that make patient $i$'s complete trajectory especially likely
+are overrepresented relative to the leave-patient-out posterior.
+Dividing each draw's weight by its *marginal full-trajectory likelihood*
+undoes that selection. Normalizing the weights makes them sum to one;
+the unknown proportionality constant cancels. The standard
+leave-one-*patient*-out raw importance ratio is
+
+$$
+r^{\mathrm{LSO},(s)}_{ki}
+\propto \frac{1}{m_{ki}(A_{\mathrm{all}}\mid
+                         \theta_k^{(s)})}
+=\exp\{-\ell^{\mathrm{all}}_{ki}
+                 (\theta_k^{(s)})\}. \tag{4}
+$$
+
+This first step targets $p_k(\theta_k\mid\mathcal D_{-i})$:
+**none** of patient $i$'s measurements remain. We then use the observed
+history $H_i$ to predict at the landmark. Let
+$\widetilde w_{ki,4}^{(s)}$ be the normalized, smoothed weights from (4),
+and let $q_{ki,t}^{(s)}=p_k(y_{it}\mid H_i,x_i,\theta_k^{(s)})$. Then
+equation (3) is estimated on the log scale by
+
+$$
+\log\widehat p_{ki,t}^{(4)}
+=\operatorname{LSE}_s\!\left(
+ \log\widetilde w_{ki,4}^{(s)}+\ell^H_{ki}(\theta_k^{(s)})
+ +\log q_{ki,t}^{(s)}\right)
+-\operatorname{LSE}_s\!\left(
+ \log\widetilde w_{ki,4}^{(s)}+\ell^H_{ki}(\theta_k^{(s)})
+ \right),
+$$
+
+where $\operatorname{LSE}$ is log-sum-exp. The history likelihood is
+required in **both** terms. Omitting it would average the future
+conditional densities over $p_k(\theta_k\mid\mathcal D_{-i})$ without
+updating the population posterior for the revealed history. In this
+route, PSIS acts on $1/m_{ki}(A_{\mathrm{all}}\mid\theta_k)$ *before*
+that history update.
+
+### Retain the history and remove only the future
+
+The posterior needed immediately before prediction is
+$p_k(\theta_k\mid\mathcal D_{-i},H_i)$: it contains the other patients
+and patient $i$'s revealed history, but no post-landmark outcomes.
+Bayes' rule and the factorization above give
+
+$$
+p_k(\theta_k\mid\mathcal D_{-i},H_i)
+\propto p_k(\theta_k\mid\mathcal D_{-i})
+          m_{ki}(A_H\mid\theta_k)
+\propto p_k(\theta_k\mid\mathcal D)
+          \frac{m_{ki}(A_H\mid\theta_k)}
+               {m_{ki}(A_{\mathrm{all}}\mid\theta_k)}.
+$$
+
+We can therefore target the landmark posterior in one step. Relative
+to the full-data posterior, the raw importance ratio is
+
+$$
+r^{\mathrm{LM},(s)}_{ki}
+\propto
+\frac{m_{ki}(A_H\mid\theta_k^{(s)})}
+     {m_{ki}(A_{\mathrm{all}}\mid\theta_k^{(s)})}
+=
+\exp\{\ell^H_{ki}(\theta_k^{(s)})
+      -\ell^{\mathrm{all}}_{ki}(\theta_k^{(s)})\}.
+\tag{5}
+$$
+
+Because
+$m_{ki}(A_{\mathrm{all}}\mid\theta_k)
+=m_{ki}(A_H\mid\theta_k)
+ p_k(F_i\mid H_i,x_i,\theta_k)$, ratio (5) is also
+$1/p_k(F_i\mid H_i,x_i,\theta_k)$. It undoes the contribution of
+**all three future measurements jointly**, while retaining the
+history. Removing only the particular $y_{it}$ being scored would
+leave the other future measurements in the posterior and leak
+information across horizons. After PSIS smooths and normalizes the
+ratios in (5), denote the weights by $\widetilde w_{ki,5}^{(s)}$.
+The estimate is a weighted average of the per-draw conditional density:
+
+$$
+\widehat p^{\mathrm{LM,PSIS}}_{k,-i}(i,t)
+=\sum_{s=1}^S \widetilde w_{ki,5}^{(s)}
+ \exp\{\ell^{H\cup\{t\}}_{ki}(\theta_k^{(s)})
+       -\ell^H_{ki}(\theta_k^{(s)})\}. \tag{6}
+$$
+
+The two routes differ in *when* they incorporate the history:
+
+| | §4.1: whole-patient route, (4) | §4.2: direct landmark route, (5) |
+|:--|:--|:--|
+| Importance ratio | $1/m_{ki}(A_{\mathrm{all}}\mid\theta_k)$ | $m_{ki}(A_H\mid\theta_k)/m_{ki}(A_{\mathrm{all}}\mid\theta_k)$ |
+| Posterior just after reweighting | Other patients only | Other patients plus patient $i$'s history |
+| History update | Applied in the final ratio of weighted predictive densities | Already included in the importance ratio |
+| Future score | Ratio of weighted joint and history densities | Weighted mean of $q_{ki,t}^{(s)}$ |
+| Pareto diagnostic | Tail of whole-patient removal weights | Tail of future-removal weights |
+
+Here is the exact algebra behind their common target. Before any Pareto
+smoothing, let $u_4^{(s)}=1/m_{ki}(A_{\mathrm{all}}\mid\theta_k^{(s)})$
+and $u_5^{(s)}=m_{ki}(A_H\mid\theta_k^{(s)})u_4^{(s)}$. Then
+
+$$
+\frac{\sum_s u_4^{(s)}m_{ki}(A_H\mid\theta_k^{(s)})q_{ki,t}^{(s)}}
+     {\sum_s u_4^{(s)}m_{ki}(A_H\mid\theta_k^{(s)})}
+=\frac{\sum_s u_5^{(s)}q_{ki,t}^{(s)}}{\sum_s u_5^{(s)}}.
+$$
+
+So the **unsmoothed estimates are identical for the same finite set of
+draws**, not merely in a large-sample limit. PSIS changes that: smoothing
+$u_4$ and then applying the history update generally differs from
+smoothing $u_5$ directly. The two Pareto $\widehat k$ diagnostics can
+also differ because they describe different ratio tails [@vehtari2024].
+Both PSIS estimates target (1), and the simulation compares them with
+exact subject-level refits. Section 4.2 can be described as
+patient-level leave-future-out importance sampling.
+
+The implementation computes $\ell^{\mathrm{all}}$, $\ell^H$, and the
+conditional future log densities for *every* full-posterior draw, with
+the patient random effects integrated out. It passes the two log ratios
+separately to [`loo::psis()`](https://mc-stan.org/loo/reference/psis),
+and evaluates the scores on the log scale. The 200-draw cap applies only
+to test predictions and exact-refit predictive integration; the PSIS
+step uses all full-fit draws. Relative effective sample size is computed
+by MCMC chain for each ratio, then passed to `psis()`.
+
+Concretely, for each candidate model and training patient, the R code:
+
+1. Draws population parameters from the fit to **all** training patients.
+2. Evaluates the marginal full-trajectory likelihood, the marginal
+   history likelihood, and each horizon's conditional future density at
+   every draw. The patient's random effects are integrated out of these
+   quantities.
+3. Forms either $-\ell^{\mathrm{all}}$ for (4) or
+   $\ell^H-\ell^{\mathrm{all}}$ for (5), calls `loo::psis()` on those log
+   ratios, and uses its normalized log weights in the corresponding
+   predictive formula. The same weights serve all three future horizons.
+4. Records Pareto $\widehat k$ and effective sample size, and compares
+   both PSIS scores with the exact leave-patient-out refit scores.
+
+```r
+# Core of simulation.R's patient-level calculation:
+ps4 <- loo::psis(-log_full, r_eff = r_eff_4)
+ps5 <- loo::psis(log_history - log_full, r_eff = r_eff_5)
+lw4 <- weights(ps4) # normalized log weights
+lw5 <- weights(ps5)
+log_score4 <- log_sum_exp(lw4 + log_history + log_conditional) -
+  log_sum_exp(lw4 + log_history)
+log_score5 <- log_sum_exp(lw5 + log_conditional)
+```
+
+The [`loo` diagnostic guidance](https://mc-stan.org/loo/reference/pareto-k-diagnostic.html)
+recommends exact refits or another validation design when the Pareto
+diagnostic is poor. With only 18 training patients, influential histories
+are plausible, so the exact refits provide a useful reference for checking
+both PSIS approximations.
+
+## Stacking objective and its scope
+
+The two-model dynamic weight for the curved candidate is
+
+$$
+w_{\mathrm{curved}}(x_i,h_t)
+=\operatorname{logit}^{-1}
+  (\alpha_0+\alpha_1h_t+\alpha_2x_i+\alpha_3x_ih_t),
+\qquad h_t=(t-3)/3. \tag{7}
+$$
+
+The linear candidate has weight $1-w_{\mathrm{curved}}$.
+[`stacking_weights.stan`](stacking_weights.stan) puts a shrinkage
+prior on the three input effects. The constant version retains only
+$\alpha_0$. We fit the weights to the conditional out-of-subject
+predictive densities from (1), using the weighted log-mixture objective
+
+$$
+\sum_{i=1}^n\frac{1}{3}
+\sum_{t=4}^{6}
+\log\!\left[
+  \sum_{k=1}^{2}w_k(x_i,h_t)
+    p^{\mathrm{LM}}_{k,-i}(i,t)
+\right]. \tag{8}
+$$
+
+The factor $1/3$ gives each patient total weight one. The three
+scores within a patient are dependent, so (8) is a **composite scoring
+objective**, not a joint likelihood for an entire future trajectory.
+The resulting mixture provides valid separate marginal predictive
+densities for each horizon, but it is not by itself a coherent joint
+distribution for visits 4–6. Evaluation therefore also reports the
+mean marginal log score, with the patient as the independent test unit.
+
+## Pilot results
+
+The table reads the saved outputs from the default two-replicate run:
+18 training patients and 60 untouched test patients per replicate.
+Higher mean log predictive density and lower RMSE are better.
+
+```{r}
+#| label: tbl-overall
+#| tbl-cap: "Performance on new test patients. All stacking fits use the same two candidate models."
+tab <- overall[, c("method", "n_patients", "mean_log_score", "rmse")]
+names(tab) <- c("Method", "Patients", "Mean log density", "RMSE")
+tab$Method <- c(constant = "Constant stacking",
+                curved = "Curved candidate",
+                dynamic = "Dynamic stacking",
+                equal = "Equal density mixture",
+                linear = "Linear candidate",
+                constant_psis4 = "Constant stacking, PSIS (4)",
+                dynamic_psis4 = "Dynamic stacking, PSIS (4)",
+                constant_psis5 = "Constant stacking, PSIS (5)",
+                dynamic_psis5 = "Dynamic stacking, PSIS (5)")[tab$Method]
+knitr::kable(tab, digits = 3)
+```
+
+The exact-refit stacking methods are labeled without a suffix. The four
+PSIS methods change only the training scores used to learn the weights;
+every method is evaluated on the same untouched test patients and the
+same full-data candidate posterior fits.
+
+### PSIS approximation against exact refits
+
+The next table compares the candidate log predictive densities used to
+train stacking. Each difference is *PSIS minus exact refit* for one
+training patient and future visit. A smaller absolute difference is
+better; agreement does not by itself establish valid coverage or good
+out-of-sample performance.
+
+```{r}
+#| label: tbl-psis-error
+#| tbl-cap: "Difference between PSIS and exact patient refits in the training scores."
+comparison <- do.call(rbind, lapply(c("linear", "curved"), function(candidate) {
+  do.call(rbind, lapply(c("4", "5"), function(version) {
+    error <- psis_scores[[paste0("log_", candidate, "_", version)]] -
+      psis_scores[[paste0("exact_", candidate)]]
+    data.frame(Candidate = candidate, Formula = paste0("(", version, ")"),
+               `Mean absolute difference` = mean(abs(error)),
+               `Maximum absolute difference` = max(abs(error)),
+               check.names = FALSE)
+  }))
+}))
+knitr::kable(comparison, digits = 3)
+```
+
+Pareto diagnostics are per **patient and candidate**, because each
+importance ratio removes that patient's full trajectory from one
+candidate fit. There are three future scores per patient, but one
+importance-weight calculation for them all. In the table below, $k\ge
+0.7$ is a simple caution flag; the sample-size-adjusted threshold in
+`loo` can be more stringent. A high $k$ means the corresponding PSIS
+estimate should not be treated as a reliable replacement for an exact
+refit [@vehtari2024].
+
+```{r}
+#| label: tbl-psis-diagnostic
+#| tbl-cap: "Patient-level PSIS diagnostics across candidate fits."
+diagnostic_summary <- do.call(rbind, lapply(c("linear", "curved"), function(candidate) {
+  d <- psis_diagnostics[psis_diagnostics$candidate == candidate, ]
+  do.call(rbind, lapply(c("4", "5"), function(version) {
+    k <- d[[paste0("pareto_k_", version)]]
+    ess <- d[[paste0("ess_", version)]]
+    data.frame(Candidate = candidate, Formula = paste0("(", version, ")"),
+               `Patients with k >= 0.7` = sum(k >= 0.7),
+               `Total patients` = length(k),
+               `Maximum k` = max(k), `Minimum PSIS ESS` = min(ess),
+               check.names = FALSE)
+  }))
+}))
+knitr::kable(diagnostic_summary, digits = 2)
+```
+
+The group-by-horizon comparison shows *why* mixtures are of interest
+here. A positive curved-minus-linear log-score difference favors the
+curved model. The right panel shows the fitted mean weight on that model,
+averaged over the two simulation replicates.
+
+```{r}
+#| label: fig-local-performance
+#| fig-cap: "Local candidate contrast and learned curved-model weights by group and future visit."
+#| fig-width: 10
+#| fig-height: 4
+candidate <- by_group[
+  by_group$method %in% c("linear", "curved"),
+  c("x", "visit", "method", "mean_log_score")
+]
+contrast <- reshape(candidate, idvar = c("x", "visit"),
+                    timevar = "method", direction = "wide")
+contrast$difference <- contrast$mean_log_score.curved -
+  contrast$mean_log_score.linear
+mean_weight <- aggregate(weight_curved ~ x + visit,
+                         weights[weights$method == "dynamic", ], mean)
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+plot(NA, xlim = c(4, 6), ylim = range(contrast$difference),
+     xlab = "Future visit", ylab = "Curved minus linear log score",
+     xaxt = "n")
+axis(1, at = 4:6)
+abline(h = 0, lty = 3, col = "gray50")
+for (g in 0:1) {
+  d <- contrast[contrast$x == g, ]
+  lines(d$visit, d$difference, type = "b",
+        col = c("#0072B2", "#D55E00")[g + 1], pch = 16 + g)
+}
+legend("topleft", c("Group 0", "Group 1"),
+       col = c("#0072B2", "#D55E00"), pch = 16:17, lty = 1,
+       bty = "n")
+plot(NA, xlim = c(4, 6),
+     ylim = range(c(0.4, 0.7, mean_weight$weight_curved)),
+     xlab = "Future visit", ylab = "Mean weight on curved model",
+     xaxt = "n")
+axis(1, at = 4:6)
+for (g in 0:1) {
+  d <- mean_weight[mean_weight$x == g, ]
+  lines(d$visit, d$weight_curved, type = "b",
+        col = c("#0072B2", "#D55E00")[g + 1], pch = 16 + g)
+}
+par(old_par)
+```
+
+The candidates do exchange relative strength, especially by the last
+horizon. These are descriptive results from two replicates, not evidence
+that one method generally dominates. The learned weight changes are
+modest, consistent with the small training sample and shrinkage. The
+[patient-level predictions](output/predictions.csv),
+[training-score comparison](output/psis_scores.csv),
+[patient diagnostics](output/psis_diagnostics.csv), and
+[group-by-horizon summary](output/by_group_horizon.csv) retain the
+numerical details.
+
+## Limits and next experiment
+
+The simulation uses a continuous marker, a fixed landmark, complete
+follow-up, and independent Gaussian random intercepts and slopes.
+The cross-validation candidate fits use one short chain each; this does
+not establish convergence for every exact refit. The PSIS approximations
+use full-data fits with four chains and are checked against those refits.
+The next experiment should increase training sample size and replications
+and examine sampler diagnostics for all folds. Censoring, irregular visit times, and
+history-dependent weights require separate design choices before this
+can represent a real clinical prediction problem.
+
+## References
